@@ -47,6 +47,10 @@ class Slider {
     this.tittle=tittle;
     this.flt = flt;
   }
+  void setValue(float val){
+    value = val;
+    x = map(val, minV, maxV, minX, minX + maxX);
+  }
   void display() {
     pushStyle();
     textSize(13);

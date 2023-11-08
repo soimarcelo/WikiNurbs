@@ -1,4 +1,6 @@
-//import nervoussystem.obj.*;                                                         //MARTIN STACEY WIKINURBS 2017
+//import nervoussystem.obj.*;  
+import processing.serial.*; 
+Serial myPort;                                                      //MARTIN STACEY WIKINURBS 2017
 boolean record = false;                                                            
 
 void setup() {                                                                      //All setups are refered to the classes pages
@@ -20,6 +22,9 @@ void setup() {                                                                  
   setupns();
   setupmap();
   setupmi();
+  println(Serial.list());
+  myPort = new Serial(this, Serial.list()[0], 9600);
+  myPort.bufferUntil('\n');
 }
 void draw() {
   background(255);
@@ -45,6 +50,19 @@ void draw() {
   actpsl(nsorigin, nssize, 1);
   drawns();
 }
+
+void serialEvent(Serial myPort) {
+  String inString = myPort.readStringUntil('\n');
+  if (inString != null) {
+    inString = trim(inString);
+    float sensorValue = float(inString);
+    sensorValue = map(sensorValue, 0, 1023, 1, 89); // fold angleの範囲が1から89と仮定
+
+    // スライダーの値を更新します。
+    sl[0].setValue(sensorValue);
+  }
+}
+
 void keyPressed() {
   if (key == 'd') {
     loaddraw();
